@@ -3,6 +3,8 @@
 
 # Log file
 *.log
+*.dumpstream
+*.lst
 
 # BlueJ files
 *.ctxt

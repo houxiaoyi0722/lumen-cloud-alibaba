@@ -1,0 +1,80 @@
+nacosaddr: 127.0.0.1:8848
+sentineladdr: 127.0.0.1:8080
+server:
+  port: 8013
+datasource:
+  db:
+    url: jdbc:mysql://localhost:13306/lumen_provider?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: w7s6bi
+    driverClassName: com.mysql.cj.jdbc.Driver
+spring:
+  redis:
+    database: 0
+    port: 6379
+    host: localhost
+#    password:
+    timeout: 2000
+    jedis:
+      pool:
+        max-active: 50
+        #连接池中的最大空闲连接
+        max-idle: 50
+        min-idle: 0
+        max-wait: 2000
+  application:
+    name: lumen-provider
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      config:
+        server-addr: ${nacosaddr}
+        file-extension: yaml
+        group: DEV_GROUP
+        namespace: dev
+#      discovery:
+#        server-addr: ${nacosaddr}
+#        namespace: dev
+#        group: DEV_LUMEN
+    sentinel:
+      transport:
+        dashboard: ${sentineladdr} #sentinel控制台
+      eager: true
+      datasource:
+        - nacos:
+            server-addr: ${nacosaddr}
+            data-id: ${spring.application.name}-flow-rules
+            group-id: SENTINEL_GROUP
+            data-type: json
+            rule-type: flow
+dubbo:
+  scan:
+    base-packages: com.lumen.provider.service
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://${nacosaddr}
+    #关闭启动时检查
+    check: true
+  consumer:
+    check: false
+  config-center:
+    check: false
+#  cloud:
+#    subscribed-services: lumen-service-master
+  provider:
+    timeout: 5000
+#sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  health:
+    diskspace:
+      enabled: false

@@ -1,0 +1,100 @@
+nacosaddr: 192.168.5.44:8848
+sentineladdr: 127.0.0.1:8080
+server:
+  port: 8080
+spring:
+  application:
+    name: lumen-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://172.21.3.231:8080/rsa/publicKey' #配置RSA的公钥访问地址
+  redis:
+    database: 0
+    port: 6379
+    host: lumen.redis.rds.aliyuncs.com
+    password: 890-uiop
+    timeout: 2000
+    jedis:
+      pool:
+        max-active: 50
+        #连接池中的最大空闲连接
+        max-idle: 50
+        min-idle: 0
+        max-wait: 2000
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          # 是否与服务发现组件进行结合，通过 serviceId 转发到具体的服务实例。默认为false
+          enabled: true
+          lower-case-service-id: true #使用小写service-id
+      routes:
+        - id: lumen-service-master
+          # 匹配断言后的访问地址
+          uri: lb://lumen-service-master
+          #匹配规则
+          predicates:
+            - Path=/master/**
+        - id: lumen-service-call
+          uri: lb://lumen-service-call
+          predicates:
+            - Path=/call/**
+        - id: lumen-auth
+          uri: lb://lumen-auth
+          predicates:
+            - Path=/oauth/**
+        - id: lumen-resource
+          uri: lb://lumen-resource
+          predicates:
+            - Path=/resource/**
+      #跨域处理
+#      globalcors:
+#        cors-configurations:
+#          '[/**]':
+#            allowedOrigins: "*"
+#            allowedMethods: "*"
+#            allowedHeaders: "*"
+#            allow-credentials: true
+    sentinel:
+      transport:
+        dashboard: ${sentineladdr}
+      filter:
+        enabled: true
+      scg.fallback:
+        mode: response
+        response-status: 444
+        response-body: Blocked
+      datasource:
+        - nacos:
+            server-addr: ${nacosaddr}
+            data-id: ${spring.application.name}-flow-rules
+            group-id: SENTINEL_GROUP
+            data-type: json
+            rule-type: flow
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+secure:
+  ignore:
+    urls: #配置白名单路径
+      - "/actuator/**"
+      - "/oauth/token"
+# 处理响应头重复
+#        corsConfigurations:
+#          '[/**]':
+#            #这里有个allowCredentials: true这个东西是设置允许访问携带cookie的，这点一定要和前端对应！
+#            allowCredentials: true
+#            #可以填写多个域名用","隔开 例如 "*"代表允许所有
+#            allowedOrigins: "*"
+#            allowedMethods: "*"
+#            allowedHeaders: "*"
+#            allow-credentials: true
+#      routes:
+#        - id: payment-router
+#          uri: lb://payment-service
+#          predicates:
+#            - Path=/pay/**

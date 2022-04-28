@@ -1,0 +1,93 @@
+nacosaddr: 127.0.0.1:8848
+sentineladdr: 127.0.0.1:8080
+server:
+  port: 8084
+spring:
+  application:
+    name: lumen-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:8020/rsa/publicKey' #配置RSA的公钥访问地址
+  redis:
+    database: 0
+    port: 6379
+    host: localhost
+  #    password:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacosaddr}
+        #server-addr: 10.14.29.67:8848
+      config:
+        server-addr: ${nacosaddr}
+        #server-addr: 10.14.29.67:8848
+        prefix: lumen-gateway
+        file-extension: yaml
+    gateway:
+      discovery:
+        locator:
+          # 是否与服务发现组件进行结合，通过 serviceId 转发到具体的服务实例。默认为false
+          enabled: true
+          lower-case-service-id: true #使用小写service-id
+      routes:
+        - id: lumen-system
+          # 匹配断言后的访问地址
+          uri: lb://lumen-system
+          #匹配规则
+          predicates:
+            - Path=/system/**
+        - id: lumen-auth
+          uri: lb://lumen-auth
+          predicates:
+            - Path=/oauth/**
+      #跨域处理
+    #      globalcors:
+    #        cors-configurations:
+    #          '[/**]':
+    #            allowedOrigins: "*"
+    #            allowedMethods: "*"
+    #            allowedHeaders: "*"
+    #            allow-credentials: true
+    sentinel:
+      transport:
+        dashboard: ${sentineladdr}
+      filter:
+        enabled: true
+      scg.fallback:
+        mode: response
+        response-status: 444
+        response-body: Blocked
+      datasource:
+        - nacos:
+            server-addr: ${nacosaddr}
+            data-id: ${spring.application.name}-flow-rules
+            group-id: SENTINEL_GROUP
+            data-type: json
+            rule-type: flow
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+secure:
+  ignore:
+    urls: #配置白名单路径
+      - "/actuator/**"
+      - "/oauth/token"
+# 处理响应头重复
+#        corsConfigurations:
+#          '[/**]':
+#            #这里有个allowCredentials: true这个东西是设置允许访问携带cookie的，这点一定要和前端对应！
+#            allowCredentials: true
+#            #可以填写多个域名用","隔开 例如 "*"代表允许所有
+#            allowedOrigins: "*"
+#            allowedMethods: "*"
+#            allowedHeaders: "*"
+#            allow-credentials: true
+#      routes:
+#        - id: payment-router
+#          uri: lb://payment-service
+#          predicates:
+#            - Path=/pay/**

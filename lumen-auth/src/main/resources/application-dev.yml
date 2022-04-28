@@ -1,0 +1,50 @@
+#除基本配置nacos相关配置外都移动到nacos配置服务中
+nacosaddr: 127.0.0.1:8848
+sentineladdr: 127.0.0.1:8080
+server:
+  port: 8020
+datasource:
+  db:
+    url: jdbc:mysql://localhost:13306/lumen_auth?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: w7s6bi
+    driverClassName: com.mysql.cj.jdbc.Driver
+spring:
+  application:
+    name: lumen-auth
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacosaddr}
+    sentinel:
+      transport:
+        dashboard: ${sentineladdr} #sentinel控制台
+      eager: true
+      datasource:
+        - nacos:
+            server-addr: ${nacosaddr}
+            data-id: ${spring.application.name}-flow-rules
+            group-id: SENTINEL_GROUP
+            data-type: json
+            rule-type: flow
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    database: 0
+    port: 6379
+    host: localhost
+#    password:
+#sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  health:
+    diskspace:
+      enabled: false

@@ -1,0 +1,46 @@
+nacosaddr: 192.168.5.44:8848
+sentineladdr: 127.0.0.1:8080
+server:
+  port: 8080
+spring:
+  application:
+    name: lumen-service-call
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacosaddr}
+    sentinel:
+      transport:
+        dashboard: ${sentineladdr} #sentinel控制台
+      eager: true
+      datasource:
+        - nacos:
+            server-addr: ${nacosaddr}
+            data-id: ${spring.application.name}-flow-rules
+            group-id: SENTINEL_GROUP
+            data-type: json
+            rule-type: flow
+dubbo:
+  scan:
+    base-packages: com.lumen
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://${nacosaddr}
+  cloud:
+    subscribed-services: lumen-service-master
+#sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  health:
+    diskspace:
+      enabled: false

@@ -38,7 +38,10 @@
         <HikariCP.version>3.4.5</HikariCP.version>
         <enhancement.version>12.8.0</enhancement.version>
         <querybean-generator.version>12.8.0</querybean-generator.version>
-        <ebean-persistence>2.2.5</ebean-persistence>
+        <ebean-persistence.version>2.2.5</ebean-persistence.version>
+        <jaxb-api.version>2.3.0-b170201.1204</jaxb-api.version>
+        <activation.version>1.1</activation.version>
+        <jaxb-runtime.version>2.3.0-b170127.1453</jaxb-runtime.version>
     </properties>
 
     <dependencyManagement>
@@ -91,6 +94,12 @@
             </dependency>
 
             <dependency>
+                <groupId>io.ebean</groupId>
+                <artifactId>ebean-ddl-generator</artifactId>
+                <version>${ebean.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.avaje.composite</groupId>
                 <artifactId>logback</artifactId>
                 <version>${avaje.logback.version}</version>
@@ -119,6 +128,27 @@
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker</artifactId>
                 <version>${freemarker.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+            <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>${activation.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime -->
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb-runtime.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -161,7 +191,7 @@
                             <path>
                                 <groupId>io.ebean</groupId>
                                 <artifactId>persistence-api</artifactId>
-                                <version>${ebean-persistence}</version>
+                                <version>${ebean-persistence.version}</version>
                             </path>
                             <!-- other annotation processors -->
                         </annotationProcessorPaths>

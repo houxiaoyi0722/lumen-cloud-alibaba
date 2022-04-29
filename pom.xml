@@ -38,6 +38,7 @@
         <HikariCP.version>3.4.5</HikariCP.version>
         <enhancement.version>12.8.0</enhancement.version>
         <querybean-generator.version>12.8.0</querybean-generator.version>
+        <ebean-persistence>2.2.5</ebean-persistence>
     </properties>
 
     <dependencyManagement>
@@ -156,6 +157,11 @@
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
                                 <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>io.ebean</groupId>
+                                <artifactId>persistence-api</artifactId>
+                                <version>${ebean-persistence}</version>
                             </path>
                             <!-- other annotation processors -->
                         </annotationProcessorPaths>

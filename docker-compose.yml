@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  mysql:
+    image: mysql:latest
+#    restart: always
+    ports:
+      - "13306:3306"
+    volumes:
+      - /opt/mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: w7s6bi
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - /docker/host/dir:/data
+#  influx:
+#    image: influxdb:1.7
+#    ports:
+#      - "8086:8086"
+#    volumes:
+#      - influxdb:/var/lib/influxdb
+#      - influxconf:/etc/influxdb
+#  chronograf:
+#    image: chronograf:1.7
+#    ports:
+#      - "8888:8888"
+#    volumes:
+#      - chronograf:/var/lib/chronograf
+#  grafana:
+#    image: grafana:8.3.3
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - grafana:/var/lib/grafana
+#volumes:
+#  influxdb:
+#  influxconf:
+#  chronograf:
+#  grafana:

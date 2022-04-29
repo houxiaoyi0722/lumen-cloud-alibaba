@@ -2,6 +2,12 @@ nacosaddr: 192.168.5.44:8848
 sentineladdr: 127.0.0.1:8080
 server:
   port: 8080
+datasource:
+  db:
+    url: jdbc:mysql://localhost:13306/lumen_auth?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: w7s6bi
+    driverClassName: com.mysql.cj.jdbc.Driver
 spring:
   application:
     name: lumen-auth

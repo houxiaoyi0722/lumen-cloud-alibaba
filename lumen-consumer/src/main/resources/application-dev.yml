@@ -33,10 +33,10 @@ spring:
         file-extension: yaml
         group: DEV_GROUP
         namespace: dev
-#      discovery:
-#        server-addr: ${nacosaddr}
-#        namespace: dev
-#        group: DEV_LUMEN
+      discovery:
+        server-addr: ${nacosaddr}
+        namespace: dev
+        group: DEV_LUMEN
     sentinel:
       transport:
         dashboard: ${sentineladdr} #sentinel控制台

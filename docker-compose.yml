@@ -7,7 +7,7 @@ services:
     ports:
       - "13306:3306"
     volumes:
-      - /opt/mysql-data:/var/lib/mysql
+      - lumen-mysql-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: w7s6bi
   redis:
@@ -35,7 +35,8 @@ services:
 #      - "3000:3000"
 #    volumes:
 #      - grafana:/var/lib/grafana
-#volumes:
+volumes:
+  lumen-mysql-data:
 #  influxdb:
 #  influxconf:
 #  chronograf:
